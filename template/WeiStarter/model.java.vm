@@ -13,12 +13,13 @@ import java.io.Serializable;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Column;
+import javax.persistence.*;
 
 ##使用宏定义实现类注释信息
 #tableComment("实体类")
 @Data
 @Accessors(chain = true)
+@Table(name = "$!{tableInfo.obj.name}")
 public class $!{tableInfo.name} implements Serializable {
 #foreach($column in $tableInfo.fullColumn)
     
@@ -27,8 +28,13 @@ public class $!{tableInfo.name} implements Serializable {
      * ${column.comment}
      */
     #end
-    #if(${column.obj.name.contains("_")})@Column(name = "`${column.obj.name}`")#end
-    
+    #if(${tableInfo.pkColumn.contains(${column})})
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    #end
+    #if(${column.obj.name.contains("_")})
+    @Column(name = "`${column.obj.name}`")
+    #end
     private $!{tool.getClsNameByFullName($column.type)} $!{column.name};
 #end
 
