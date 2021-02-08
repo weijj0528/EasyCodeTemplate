@@ -1,0 +1,55 @@
+{
+  "name" : "GT",
+  "elementList" : [ {
+    "columnType" : "varchar(\\(\\d+\\))?",
+    "javaType" : "java.lang.String"
+  }, {
+    "columnType" : "char(\\(\\d+\\))?",
+    "javaType" : "java.lang.String"
+  }, {
+    "columnType" : "text",
+    "javaType" : "java.lang.String"
+  }, {
+    "columnType" : "decimal(\\(\\d+\\))?",
+    "javaType" : "java.math.BigDecimal"
+  }, {
+    "columnType" : "decimal(\\(\\d+,\\d+\\))?",
+    "javaType" : "java.math.BigDecimal"
+  }, {
+    "columnType" : "integer",
+    "javaType" : "java.lang.Integer"
+  }, {
+    "columnType" : "int(\\(\\d+\\))?",
+    "javaType" : "java.lang.Integer"
+  }, {
+    "columnType" : "int4",
+    "javaType" : "java.lang.Integer"
+  }, {
+    "columnType" : "int8",
+    "javaType" : "java.lang.Long"
+  }, {
+    "columnType" : "bigint(\\(\\d+\\))( unsigned)?",
+    "javaType" : "java.lang.Long"
+  }, {
+    "columnType" : "datetime",
+    "javaType" : "java.util.Date"
+  }, {
+    "columnType" : "timestamp",
+    "javaType" : "java.util.Date"
+  }, {
+    "columnType" : "boolean",
+    "javaType" : "java.lang.Boolean"
+  }, {
+    "columnType" : "tinyint(\\(1\\))",
+    "javaType" : "java.lang.Boolean"
+  }, {
+    "columnType" : "tinyint(\\([2-9]\\))( unsigned)?",
+    "javaType" : "java.lang.Integer"
+  }, {
+    "columnType" : "smallint",
+    "javaType" : "java.lang.Integer"
+  }, {
+    "columnType" : "smallint(\\(\\d+\\))?",
+    "javaType" : "java.lang.Integer"
+  } ]
+}

@@ -1,0 +1,76 @@
+##定义初始变量
+#set($tableName = $tool.append($tableInfo.name, "Service"))
+##设置回调
+$!callback.setFileName($tool.append("I", $tableName, ".java"))
+$!callback.setSavePath($tool.append($tableInfo.savePath, "/service"))
+
+##拿到主键
+#if(!$tableInfo.pkColumn.isEmpty())
+    #set($pk = $tableInfo.pkColumn.get(0))
+#end
+
+#if($tableInfo.savePackageName)package $!{tableInfo.savePackageName}.#{end}service;
+
+import $!{tableInfo.savePackageName}.entity.$!{tableInfo.name};
+import java.util.List;
+
+import com.gtown.cloud.commons.dto.IPage;
+
+/**
+ * $!{tableInfo.comment}($!{tableInfo.name})表服务接口
+ *
+ * @author $!author
+ * @since $!time.currTime()
+ */
+public interface I$!{tableName} {
+
+#if($pk)
+
+    /**
+     * 通过主键获取数据
+     * @param id 主键
+     * @return 实体
+     */
+    $tableInfo.name getBy${tool.firstUpperCase($pk.name)}($pk.shortType $pk.name);
+
+    /**
+     * 通过主键获取数据
+     *
+     * @param ids 主键列表
+     */
+    List<$tableInfo.name> listBy${tool.firstUpperCase($pk.name)}s(List<$pk.shortType> ${pk.name}s);
+
+    /**
+     * 修改数据
+     *
+     * @param $!tool.firstLowerCase($!{tableInfo.name}) 实例对象
+     * @return 实例对象
+     */
+    Integer updateBy${tool.firstUpperCase($pk.name)}($tableInfo.name ${tool.firstLowerCase($tableInfo.name)});
+#end
+    /**
+     * 新增数据
+     *
+     * @param $!tool.firstLowerCase($!{tableInfo.name}) 实例对象
+     * @return 实例对象
+     */
+    Long save($tableInfo.name $!tool.firstLowerCase($!{tableInfo.name}));
+
+    /**
+     * 批量保存
+     *
+     * @param entities 实体对象
+     * @return 主键
+     */
+    Integer saveBatch(List<$tableInfo.name> entities);
+
+    /**
+     * 查询列表
+     *
+     * @param query 查询条件对象
+     * @param page 分页条件
+     * @return 实体列表
+     */
+    <T, O> IPage<O> select(T query, IPage<O> page);
+
+}

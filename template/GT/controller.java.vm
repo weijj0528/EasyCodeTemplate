@@ -1,0 +1,80 @@
+##定义初始变量
+#set($tableName = $tool.append($tableInfo.name, "Controller"))
+##设置回调
+$!callback.setFileName($tool.append($tableName, ".java"))
+$!callback.setSavePath($tool.append($tableInfo.savePath, "/controller"))
+##拿到主键
+#if(!$tableInfo.pkColumn.isEmpty())
+    #set($pk = $tableInfo.pkColumn.get(0))
+#end
+
+#if($tableInfo.savePackageName)package $!{tableInfo.savePackageName}.#{end}controller;
+
+import com.gtown.cloud.commons.Result;
+import com.gtown.cloud.commons.exception.NotFoundException;
+import com.gtown.cloud.commons.dto.IPage;
+import com.gtown.cloud.commons.util.MapUtils;
+import java.util.Map;
+import $!{tableInfo.savePackageName}.entity.$!{tableInfo.name};
+import $!{tableInfo.savePackageName}.service.I$!{tableInfo.name}Service;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+
+/**
+ * $!{tableInfo.comment}($!{tableInfo.name})表控制层
+ *
+ * @author $!author
+ * @since $!time.currTime()
+ */
+@RestController
+@RequestMapping("/$!tool.underScoreToHyphen($tableInfo.name)" )
+public class $!{tableName} {
+    /**
+     * 服务对象
+     */
+    @Resource
+    private I$!{tableInfo.name}Service $!tool.firstLowerCase($tableInfo.name)Service;
+
+    /**
+      * 保存
+      */
+    @PostMapping
+    public Result<Map<String, $!{pk.shortType}>>save(@RequestBody $!{tableInfo.name} $!{tool.firstLowerCase($tableInfo.name)}){
+        $!{tool.firstLowerCase($tableInfo.name)}Service.save($!{tool.firstLowerCase($tableInfo.name)});
+        return Result.success(MapUtils.newHashMap("id", $!{tool.firstLowerCase($tableInfo.name)}.getId()));
+    }
+
+#if($pk)
+    /**
+     * 更新
+     */
+    @PutMapping("{id}" )
+    public Result<Void> update(@PathVariable("id" ) $!{pk.shortType} id, @RequestBody $!{tableInfo.name} $!{tool.firstLowerCase($tableInfo.name)}){
+        $!{tool.firstLowerCase($tableInfo.name)}.set$!{tool.firstUpperCase($pk.name)}(id);
+        $!{tool.firstLowerCase($tableInfo.name)}Service.updateById($!{tool.firstLowerCase($tableInfo.name)});
+        return Result.success();
+    }
+
+    /**
+    * 通过id查找
+    */
+    @GetMapping("{id}" )
+    public Result<$!{tableInfo.name}> findBy$!{tool.firstUpperCase($pk.name)}(@PathVariable("id" ) $!{pk.shortType} id){
+        $!{tableInfo.name} $!{tool.firstLowerCase($tableInfo.name)} = $!{tool.firstLowerCase($tableInfo.name)}Service.getBy$!{tool.firstUpperCase($pk.name)}(id);
+        if($!{tool.firstLowerCase($tableInfo.name)} == null){
+            throw new NotFoundException();
+        }
+        return Result.success($!{tool.firstLowerCase($tableInfo.name)});
+    }
+#end
+
+    /**
+    * 通过条件查询
+    */
+    @GetMapping
+    public Result<IPage<$!{tableInfo.name}>>list($!{tableInfo.name} query,IPage<$!{tableInfo.name}> page){
+        return Result.success($!{tool.firstLowerCase($tableInfo.name)}Service.select(query,page));
+    }
+
+}
