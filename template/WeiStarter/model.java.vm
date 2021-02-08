@@ -1,0 +1,42 @@
+##引入宏定义
+$!define
+
+##使用宏定义设置回调（保存位置与文件后缀）
+#save("/model", ".java")
+
+##使用宏定义设置包后缀
+#setPackageSuffix("model")
+
+##使用全局变量实现默认包导入
+$!autoImport
+import java.io.Serializable;
+import lombok.Data;
+import lombok.experimental.Accessors;
+
+import javax.persistence.Column;
+
+##使用宏定义实现类注释信息
+#tableComment("实体类")
+@Data
+@Accessors(chain = true)
+public class $!{tableInfo.name} implements Serializable {
+#foreach($column in $tableInfo.fullColumn)
+    
+    #if(${column.comment})
+    /**
+     * ${column.comment}
+     */
+    #end
+    #if(${column.obj.name.contains("_")})@Column(name = "`${column.obj.name}`")#end
+    
+    private $!{tool.getClsNameByFullName($column.type)} $!{column.name};
+#end
+
+    private static final long serialVersionUID = 1L;
+#foreach($column in $tableInfo.fullColumn)
+
+    public static final String ${column.obj.name.toUpperCase()} = "$!{column.name}";
+    
+    public static final String DB_${column.obj.name.toUpperCase()} = "$!{column.obj.name}";
+#end
+}

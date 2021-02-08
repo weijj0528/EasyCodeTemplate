@@ -1,0 +1,44 @@
+##引入mybatis支持
+$!mybatisSupport
+
+##设置保存名称与保存位置
+$!callback.setFileName($tool.append($!{tableInfo.name}, "Mapper.xml"))
+$!callback.setSavePath($tool.append($modulePath, "/src/main/resources/mapper"))
+
+##拿到主键
+#if(!$tableInfo.pkColumn.isEmpty())
+    #set($pk = $tableInfo.pkColumn.get(0))
+#end
+#set($lowerTableName = $!{tool.firstLowerCase($tableInfo.name)})
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="$!{tableInfo.savePackageName}.mapper.$!{tableInfo.name}Mapper">
+
+    <resultMap type="$!{tableInfo.savePackageName}.model.$!{tableInfo.name}" id="$!{lowerTableName}ResultMap">
+    #foreach($column in $tableInfo.fullColumn)
+        <result property="$!column.name" column="$!column.obj.name" jdbcType="$!column.ext.jdbcType"/>
+    #end
+    </resultMap>
+
+    <sql id="$!{lowerTableName}BaseColumn">
+    #foreach($column in $tableInfo.fullColumn)
+    t.`$column.obj.name`#if($velocityHasNext),#end
+    
+    #end
+    </sql>
+
+    <sql id="${lowerTableName}QueryCondition">
+    #foreach($column in $tableInfo.fullColumn)
+        #if($tool.isIndexColumn($column.obj))
+        <if test="q.$!column.name != null#if($column.type.equals("java.lang.String")) and q.$!column.name != ''#end">
+            AND t.`$!column.obj.name` = #{q.$!column.name}
+        </if>
+        #end
+    #end
+    #if($logicDelete)
+        AND t.`${logicDelete.obj.name}` = 0
+    #end
+    </sql>
+
+</mapper>

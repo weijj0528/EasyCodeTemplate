@@ -1,0 +1,106 @@
+##定义初始变量
+#set($tableName = $tool.append($tableInfo.name, "Controller"))
+##设置回调
+$!callback.setFileName($tool.append($tableName, ".java"))
+$!callback.setSavePath($tool.append($tableInfo.savePath, "/controller"))
+##拿到主键
+#if(!$tableInfo.pkColumn.isEmpty())
+    #set($pk = $tableInfo.pkColumn.get(0))
+#end
+
+#if($tableInfo.savePackageName)package $!{tableInfo.savePackageName}.#{end}controller;
+
+import com.wei.starter.base.bean.Page;
+import com.wei.starter.base.bean.Result;
+import com.wei.starter.base.valid.Add;
+import com.wei.starter.base.valid.Update;
+import $!{tableInfo.savePackageName}.dto.$!{tableInfo.name}DTO;
+import $!{tableInfo.savePackageName}.service.$!{tableInfo.name}Service;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+
+/**
+ * $!{tableInfo.comment}($!{tableInfo.name})表控制层
+ *
+ * @author $!author
+ * @since $!time.currTime()
+ */
+@Controller
+@RequestMapping("/$!tool.hump2Underline($tableInfo.name)" )
+public class $!{tableName} {
+    
+    @Resource
+    private ${tableInfo.name}Service ${tool.firstLowerCase(${tableInfo.name})}Service;
+    
+    /**
+     * 新增保存
+     *
+     * @param saveDTO the save dto
+     * @return result
+     */
+    @ResponseBody
+    @PostMapping
+    public Result<Void> save(@RequestBody @Validated(Add.class) ${tableInfo.name}DTO saveDTO) {
+        ${tool.firstLowerCase(${tableInfo.name})}Service.save(saveDTO);
+        return Result.success();
+    }
+    
+    /**
+     * 删除
+     *
+     * @param id the id
+     * @return the result
+     */
+    @ResponseBody
+    @DeleteMapping("/{id}")
+    public Result<Void> delete(@PathVariable Long id) {
+        ${tool.firstLowerCase(${tableInfo.name})}Service.delete(id);
+        return Result.success();
+    }
+
+    /**
+     * 更新
+     *
+     * @param id        the id
+     * @param updateDTO the update dto
+     * @return the result
+     */
+    @ResponseBody
+    @PutMapping("/{id}")
+    public Result<Void> update(@PathVariable Long id, @RequestBody @Validated(Update.class) ${tableInfo.name}DTO updateDTO) {
+        updateDTO.setId(id);
+        ${tool.firstLowerCase(${tableInfo.name})}Service.update(updateDTO);
+        return Result.success();
+    }
+
+    /**
+     * 详情
+     *
+     * @param id the id
+     * @return the result
+     */
+    @ResponseBody
+    @GetMapping("/{id}")
+    public Result<${tableInfo.name}DTO> details(@PathVariable Long id) {
+        ${tableInfo.name}DTO details = ${tool.firstLowerCase(${tableInfo.name})}Service.details(id);
+        return Result.success(details);
+    }
+
+    /**
+     * 分页查询
+     *
+     * @param queryDTO the query dto
+     * @param page     the page
+     * @return the result
+     */
+    @ResponseBody
+    @GetMapping
+    public Result<Page<${tableInfo.name}DTO>> page(${tableInfo.name}DTO queryDTO, Page<${tableInfo.name}DTO> page) {
+        ${tool.firstLowerCase(${tableInfo.name})}Service.list(queryDTO, page);
+        return Result.success(page);
+    }
+
+}
