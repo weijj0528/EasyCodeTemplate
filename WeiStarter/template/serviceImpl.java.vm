@@ -1,0 +1,112 @@
+##定义初始变量
+#set($tableName = $tool.append($tableInfo.name, "ServiceImpl"))
+##设置回调
+$!callback.setFileName($tool.append($tableName, ".java"))
+$!callback.setSavePath($tool.append($tableInfo.savePath, "/service/impl"))
+
+##拿到主键
+#if(!$tableInfo.pkColumn.isEmpty())
+    #set($pk = $tableInfo.pkColumn.get(0))
+#end
+
+#if($tableInfo.savePackageName)package $!{tableInfo.savePackageName}.#{end}service.impl;
+
+import com.wei.starter.base.bean.Page;
+import com.wei.starter.base.util.WeiBeanUtil;
+import com.wei.starter.mybatis.xmapper.XMapper;
+import com.wei.starter.mybatis.service.AbstractService;
+import $!{tableInfo.savePackageName}.dto.$!{tableInfo.name}DTO;
+import $!{tableInfo.savePackageName}.model.$!{tableInfo.name};
+import $!{tableInfo.savePackageName}.mapper.$!{tableInfo.name}Mapper;
+import $!{tableInfo.savePackageName}.service.$!{tableInfo.name}Service;
+import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
+
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ * $!{tableInfo.comment}($!{tableInfo.name})表服务实现类
+ *
+ * @author $!author
+ * @since $!time.currTime()
+ */
+@Service("$!tool.firstLowerCase($!{tableInfo.name})Service")
+public class $!{tableName} extends AbstractService<${tableInfo.name}> implements $!{tableInfo.name}Service {
+    
+    @Resource
+    private ${tableInfo.name}Mapper ${tool.firstLowerCase(${tableInfo.name})}Mapper;
+
+    @Override
+    public XMapper<${tableInfo.name}> getMapper() {
+        return ${tool.firstLowerCase(${tableInfo.name})}Mapper;
+    }
+
+    /**
+     * Save int.
+     *
+     * @param dto
+     * @return the int
+     */
+    @Override
+    public int save(${tableInfo.name}DTO dto) {
+        ${tableInfo.name} ${tool.firstLowerCase(${tableInfo.name})} = WeiBeanUtil.toBean(dto, ${tableInfo.name}.class);
+        return getMapper().insertSelective(${tool.firstLowerCase(${tableInfo.name})});
+    }
+
+    /**
+     * Delete int.
+     *
+     * @param id
+     * @return the int
+     */
+    @Override
+    public int delete(Object id) {
+        return getMapper().deleteByPrimaryKey(id);
+    }
+
+    /**
+     * Update int.
+     *
+     * @param dto
+     * @return the int
+     */
+    @Override
+    public int update(${tableInfo.name}DTO dto) {
+        ${tableInfo.name} ${tool.firstLowerCase(${tableInfo.name})} = WeiBeanUtil.toBean(dto, ${tableInfo.name}.class);
+        return getMapper().updateByPrimaryKeySelective(${tool.firstLowerCase(${tableInfo.name})});
+    }
+
+    /**
+     * Details ${tool.firstLowerCase(${tableInfo.name})} dto.
+     *
+     * @return the ${tool.firstLowerCase(${tableInfo.name})} dto
+     */
+    @Override
+    public ${tableInfo.name}DTO details(Object id) {
+        ${tableInfo.name} ${tool.firstLowerCase(${tableInfo.name})} = getMapper().selectByPrimaryKey(id);
+        return WeiBeanUtil.toBean(${tool.firstLowerCase(${tableInfo.name})}, ${tableInfo.name}DTO.class);
+    }
+
+    /**
+     * List list.
+     *
+     * @param queryDTO
+     * @param page
+     * @return the list
+     */
+    @Override
+    public List<${tableInfo.name}DTO> list(${tableInfo.name}DTO queryDTO, Page<${tableInfo.name}DTO> page) {
+        Example example = new Example(${tableInfo.name}.class);
+        Example.Criteria criteria = example.createCriteria();
+        // TODO 查询条件组装
+        Page<${tableInfo.name}> ${tool.firstLowerCase(${tableInfo.name})}Page = new Page<>();
+        ${tool.firstLowerCase(${tableInfo.name})}Page.setPage(page.getPage());
+        ${tool.firstLowerCase(${tableInfo.name})}Page.setSize(page.getSize());
+        selectPageByExample(example, ${tool.firstLowerCase(${tableInfo.name})}Page);
+        List<${tableInfo.name}DTO> ${tool.firstLowerCase(${tableInfo.name})}DTOList = WeiBeanUtil.toList(${tool.firstLowerCase(${tableInfo.name})}Page.getList(), ${tableInfo.name}DTO.class);
+        page.setTotal(${tool.firstLowerCase(${tableInfo.name})}Page.getTotal());
+        page.setList(${tool.firstLowerCase(${tableInfo.name})}DTOList);
+        return ${tool.firstLowerCase(${tableInfo.name})}DTOList;
+    }    
+}

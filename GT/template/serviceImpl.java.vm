@@ -1,0 +1,31 @@
+##定义初始变量
+#set($tableName = $tool.append($tableInfo.name, "ServiceImpl"))
+##设置回调
+$!callback.setFileName($tool.append($tableName, ".java"))
+$!callback.setSavePath($tool.append($tableInfo.savePath, "/service/impl"))
+
+##拿到主键
+#if(!$tableInfo.pkColumn.isEmpty())
+    #set($pk = $tableInfo.pkColumn.get(0))
+#end
+
+#if($tableInfo.savePackageName)package $!{tableInfo.savePackageName}.#{end}service.impl;
+
+import $!{tableInfo.savePackageName}.entity.$!{tableInfo.name};
+import $!{tableInfo.savePackageName}.mapper.$!{tableInfo.name}Mapper;
+import $!{tableInfo.savePackageName}.service.I$!{tableInfo.name}Service;
+import org.springframework.stereotype.Service;
+import com.gtown.cloud.mybatis.service.BaseServiceImpl;
+
+/**
+ * $!{tableInfo.comment}($!{tableInfo.name})表服务实现类
+ *
+ * @author $!author
+ * @since $!time.currTime()
+ */
+@Service("$!tool.firstLowerCase($!{tableInfo.name})Service")
+public class $!{tableName} extends BaseServiceImpl<${tableInfo.name}Mapper, ${tableInfo.name}, ${pk.shortType}> implements I$!{tableInfo.name}Service {
+    public ${tableName}(${tableInfo.name}Mapper ${tool.firstLowerCase($tableInfo.name)}Mapper) {
+        super(${tool.firstLowerCase($tableInfo.name)}Mapper);
+    }
+}

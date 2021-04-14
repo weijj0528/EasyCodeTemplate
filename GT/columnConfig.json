@@ -1,0 +1,12 @@
+{
+  "name" : "GT",
+  "elementList" : [ {
+    "title" : "disable",
+    "type" : "BOOLEAN",
+    "selectValue" : null
+  }, {
+    "title" : "logicDelete",
+    "type" : "BOOLEAN",
+    "selectValue" : null
+  } ]
+}
