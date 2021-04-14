@@ -1,8 +1,0 @@
-{
-  "name" : "Default",
-  "elementList" : [ {
-    "title" : "disable",
-    "type" : "BOOLEAN",
-    "selectValue" : null
-  } ]
-}
